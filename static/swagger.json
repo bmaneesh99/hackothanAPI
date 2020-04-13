@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "REST API for Health Advisor Application",
+    "version": "1.0.0",
+    "title": "Health Advisor API",
+    "license": {
+      "name": "IBM",
+      "url": "http://www.ibm.com"
+    }
+  },
+  "paths": {
+    "/request": {
+      "get": {
+        "tags": [
+          "Patient Queries"
+        ],
+        "summary": "Returns all patients",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/patient"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Patient Queries"
+        ],
+        "summary": "Creates a new patient",
+        "requestBody": {
+          "description": "Patient Details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/patient"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      }
+    },
+    "/request/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of the patient that we want to match",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Patient Queries"
+        ],
+        "summary": "Rerieves patient record, provided a valid ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Patient ID",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/patient"
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "404": {
+            "description": "Failed. Patient not found."
+          }
+        }
+      },
+      "put": {
+        "summary": "Edits a patient record, provided a valid ID and data",
+        "tags": [
+          "Patient Queries"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Patient ID",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Patient Request Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/patient"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/patient"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletea a patient record, provided a valid ID",
+        "tags": [
+          "Patient Queries"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Patient ID",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "404": {
+            "description": "Failed. Patient Request not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "id": {
+        "properties": {
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "patient": {
+        "type": "object",
+        "properties": {
+          "fullname": {
+            "type": "string",
+            "format": "string"
+          },
+          "age": {
+            "type": "string",
+            "format": "string"
+          },
+          "gender": {
+            "type": "string",
+            "format": "string"
+          },
+          "height": {
+            "type": "string",
+            "format": "string"
+          },
+          "weight": {
+            "type": "string",
+            "format": "string"
+          },
+          "maritalStatus": {
+            "type": "string",
+            "format": "string"
+          },
+          "allergies": {
+            "type": "string",
+            "format": "string"
+          },
+          "tobaccoUse": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    }
+  }
+}
