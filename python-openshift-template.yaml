@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: python-application-template
+message: Defines application build and deployment components
+metadata:
+  annotations:
+    openshift.io/display-name: Build and Deployment config
+    description: Docker template to build and deploy Dockerfile applications from GitHub 
+    iconClass: icon-laravel
+    tags: instant-app
+  name: python-application-template
+parameters:
+- description: Application GIT Url
+  displayName: GitHub URL
+  name: APPLICATION_GIT_URL
+  required: true
+- description: Application name
+  displayName: Application Name
+  name: APPLICATION_NAME
+  required: true
+- description: Context directory for Docker File
+  displayName: Context directory
+  name: CONTEXT_DIR
+  value: "."
+  required: true
+
+objects:
+
+- apiVersion: v1
+  kind: "BuildConfig"
+  metadata:
+    name: ${APPLICATION_NAME}
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    runPolicy: "Serial"
+    source: 
+      contextDir: ${CONTEXT_DIR}
+      git: 
+        uri: "${APPLICATION_GIT_URL}"
+    strategy:
+      dockerStrategy:
+        dockerfilePath: Dockerfile
+        env:
+          - name: "BUILD_LOGLEVEL"
+            value: "5"
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${APPLICATION_NAME}
+    template:
+      metadata:
+        labels:
+          app: ${APPLICATION_NAME}
+      spec:
+        containers:
+          - image: ${APPLICATION_NAME}:latest
+            name: ${APPLICATION_NAME}
+            imagePullPolicy: IfNotPresent
+            resources:
+              limits:
+                cpu: 300m
+                memory: 500Mi
+              requests:
+                cpu: 100m
+                memory: 250Mi
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+    triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - ${APPLICATION_NAME}
+          from:
+            kind: ImageStreamTag
+            name: ${APPLICATION_NAME}:latest
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    ports:
+      - port: 5000
+        protocol: TCP
+        targetPort: 5000
+    selector:
+      app: ${APPLICATION_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+    annotations:
+      haproxy.router.openshift.io/balance: roundrobin
+  spec:
+    to:
+      kind: Service
+      name: ${APPLICATION_NAME}
+      weight: 100
+    tls:
+      termination: edge
+    wildcardPolicy: None

@@ -1,2 +1,2 @@
-mongodburl=mongodb://127.0.0.1:27017
-mongodbname=test
+mongodburl=mongodb://root:root@mongo:27017/healthplannerdb
+mongodbname=healthplannerdb
