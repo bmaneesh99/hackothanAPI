@@ -46,3 +46,30 @@ mongodbname= healthplannerdb
 * On your browser, navigate to http://127.0.0.1:5000/swagger and you should see a screen like the following
 ![Logo](HealthPlannerSwaggerUI.png)
 * Now try out the various APIs to see how they work. You first need to add some records using the post function to be able to retrieve or update records
+
+### Deployment in OpenShift
+* Create required template for docker build after GIT checkout and OC login
+```
+oc create -f python-openshift-template.yaml
+
+```
+* Create the application after OC login
+```
+oc new-app --template=python-application-template \
+-p APPLICATION_GIT_URL=https://github.ibm.com/ritac041/healthplannerPythonAPI.git \
+-p APPLICATION_NAME=healthapi
+
+```
+* Start the oc build
+```
+oc start-build oc start-build healthapi
+```
+
+### For local docker
+* Create docker image and run
+```
+docker build -t healthapi-image . --no-cache
+docker run -d --name healthapi -p 5000:5000 healthapi-image
+
+```
+
