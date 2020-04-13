@@ -62,7 +62,7 @@ oc new-app --template=python-application-template \
 ```
 * Start the oc build
 ```
-oc start-build oc start-build healthapi
+oc start-build healthapi
 ```
 
 ### For local docker
