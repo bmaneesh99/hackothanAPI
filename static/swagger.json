@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.3",
   "info": {
     "description": "REST API for Health Advisor Application",
     "version": "1.0.0",
@@ -53,6 +53,9 @@
           },
           "400": {
             "description": "Failed. Bad post data."
+          },
+          "404": {
+            "description": "Failed. Patient already exists."
           }
         }
       }
@@ -185,44 +188,85 @@
       "patient": {
         "type": "object",
         "properties": {
-          "fullname": {
-            "type": "string",
-            "format": "string"
-          },
-          "age": {
-            "type": "string",
-            "format": "string"
-          },
-          "gender": {
-            "type": "string",
-            "format": "string"
-          },
-          "height": {
-            "type": "string",
-            "format": "string"
-          },
-          "weight": {
-            "type": "string",
-            "format": "string"
-          },
-          "maritalStatus": {
-            "type": "string",
-            "format": "string"
-          },
-          "allergies": {
-            "type": "string",
-            "format": "string"
-          },
-          "tobaccoUse": {
-            "type": "string",
-            "format": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
+            "id": {
+              "type": "string",
+              "format": "string"
+            },
+            "patientName": {
+              "$ref": "#/components/schemas/patientname"
+            },
+            "gender": {
+              "type": "string",
+              "format": "string"
+            },
+            "dateOfBirth": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "mailId": {
+              "type": "string",
+              "format": "email"
+            },
+            "maritalStatus": {
+              "type": "string",
+              "format": "string"
+            },
+            "medHistory": {
+              "$ref": "#/components/schemas/medHistory"
+            },
+            "phone": {
+              "type": "string",
+              "format": "string"
+            },
+            "postalAddress": {
+              "$ref": "#/components/schemas/postalAddress"
+            }
+          }
+        },
+        "patientname": {
+          "type": "object",
+          "properties": {
+              "firstName": {
+                "type": "string",
+                "format": "string"
+              },
+              "lastName": {
+                "type": "string",
+                "format": "string"
+              }
+            }
+        },
+        "medHistory": {
+          "type": "array",
+          "items": {
+              "type": "string"
+            }
+        },
+        "postalAddress": {
+          "type": "object",
+          "properties": {
+              "city": {
+                "type": "string",
+                "format": "string"
+              },
+              "line1": {
+                "type": "string",
+                "format": "string"
+              },
+              "line2": {
+                "type": "string",
+                "format": "string"
+              },
+              "state": {
+                "type": "string",
+                "format": "string"
+              },
+              "zip": {
+                "type": "string",
+                "format": "string"
+              }
           }
         }
-      }
     }
   }
 }
