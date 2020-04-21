@@ -56,7 +56,7 @@ oc create -f python-openshift-template.yaml
 * Create the application after OC login
 ```
 oc new-app --template=python-application-template \
--p APPLICATION_GIT_URL=https://github.ibm.com/ritac041/healthplannerPythonAPI.git \
+-p APPLICATION_GIT_URL=https://github.ibm.com/Hackathon-ContainerCrush/healthplannerPythonAPI.git \
 -p APPLICATION_NAME=healthapi
 
 ```
